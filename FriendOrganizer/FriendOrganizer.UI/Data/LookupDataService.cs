@@ -27,7 +27,7 @@ namespace FriendOrganizer.UI.Data
                     new LookupItem
                     {
                         Id = f.Id,
-                        DisplayMember = $"{f.FirstName} {f.LastName}"
+                        DisplayMember = f.FirstName + " " + f.LastName
                     })
                     .ToListAsync();
             }
