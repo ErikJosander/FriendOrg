@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using FriendOrganizer.UI.Startup;
 using Autofac;
+using System;
 
 namespace FriendOrganizer.UI
 {
@@ -16,6 +17,14 @@ namespace FriendOrganizer.UI
 
             var mainWindow = container.Resolve<MainWindow>();
             mainWindow.Show();
+        }
+
+        private void Application_DispatcherUnhandledException(object sender, 
+            System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("Unexpected error occured, pleas inform the admin." +
+                Environment.NewLine + e.Exception.Message, ", Error occured");
+            e.Handled = true;
         }
     }
 }
