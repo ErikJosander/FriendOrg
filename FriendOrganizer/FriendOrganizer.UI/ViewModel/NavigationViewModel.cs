@@ -22,6 +22,16 @@ namespace FriendOrganizer.UI.ViewModel
             _friendLookupDataService = friendLookupDataService;
             _evenAggregator = eventAggregator;
             Friends = new ObservableCollection<LookupItem>();
+
+            _evenAggregator.GetEvent<AfterFriendSavedEvent>()
+                .Subscribe(AfterFriendSaved);
+        }
+
+        private async void AfterFriendSaved(AfterFriendSavedEventArgs obj)
+        {
+            var lookupItem = Friends.Single(l => l.Id == obj.Id);
+            lookupItem.DisplayMember = obj.DisplayMember;
+
         }
 
         public async Task LoadAsync()
