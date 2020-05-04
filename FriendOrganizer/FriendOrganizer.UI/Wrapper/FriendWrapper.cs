@@ -1,63 +1,58 @@
 ﻿using FriendOrganizer.Models;
 using FriendOrganizer.UI.ViewModel;
 using System;
+using System.Text.RegularExpressions;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace FriendOrganizer.UI.Wrapper
 {
-    public class FriendWrapper : NotifyDataErrorInfoBase
+    public class FriendWrapper : ModelWrapper<Friend>
     {
-        public FriendWrapper(Friend model)
+        public FriendWrapper(Friend model) : base(model)
         {
-            Model = model;
-        }
 
-        public Friend Model { get; }
+        }
         public int Id { get { return Model.Id; } }
         public string FirstName
         {
-            get { return Model.FirstName; }
-            set
-            {
-                Model.FirstName = value;
-                OnPropertyChanged();
-                ValidateProperty(nameof(FirstName));
-            }
+            get { return GetValue<string>(); }
+            set { SetValue(value); }
+        }
+        public string LastName
+        {
+            get { return GetValue<string>(); }
+            set { SetValue(value); }
         }
 
-        private void ValidateProperty(string propertyName)
+        public string Email
         {
-            ClearError(propertyName);
+            get { return GetValue<string>(); }
+            set { SetValue(value); }
+        }
+        protected override IEnumerable<string> ValidateProperty(string propertyName)
+        {
             switch (propertyName)
             {
                 case nameof(FirstName):
                     if (string.Equals(FirstName, "Robot", StringComparison.OrdinalIgnoreCase))
                     {
-                        AddError(propertyName, "Robots are not valid friends");
+                        yield return "Robots are not valid friends";
+                    }
+                    break;
+                case nameof(LastName):
+                    if (string.Equals(LastName, "Hitler", StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return "Nazis are not valid friends";
+                    }
+                    break;
+                case nameof(Email):
+                    if (IsValidEmail(Email))
+                    {
+                        yield return "Email is not valid";
                     }
                     break;
             }
         }
-
-        public string LastName
-        {
-            get { return Model.LastName; }
-            set
-            {
-                Model.LastName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string Email
-        {
-            get { return Model.Email; }
-            set
-            {
-                Model.Email = value;
-                OnPropertyChanged();
-            }
-        }
-
     }
 }
