@@ -1,4 +1,5 @@
 ﻿using FriendOrganizer.UI.Event;
+using FriendOrganizer.UI.View.Services;
 using Prism.Events;
 using System;
 using System.Threading.Tasks;
@@ -9,19 +10,20 @@ namespace FriendOrganizer.UI.ViewModel
     {
         private IEventAggregator _eventAggregator;
         private Func<IFriendDetailViewModel> _friendDetailViewModelCreator;
+        private IMessageDialogService _messageDialogService;
         private IFriendDetailViewModel _friendDetailViewModel;
 
         public MainViewModel(INavigationViewModel navigationViewModel,
             Func<IFriendDetailViewModel> friendDetailViewModelCreator,
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator,
+            IMessageDialogService messageDialogService)
         {
             _eventAggregator = eventAggregator;
-
             _friendDetailViewModelCreator = friendDetailViewModelCreator;
+            _messageDialogService = messageDialogService;
 
             _eventAggregator.GetEvent<OpenFriendDetailViewEvent>()
                 .Subscribe(OnOpenFriendDetaiView);
-
             NavigationViewModel = navigationViewModel;
         }         
         public async Task LoadAync()
@@ -30,6 +32,14 @@ namespace FriendOrganizer.UI.ViewModel
         }
         private async void OnOpenFriendDetaiView(int friendId)
         {
+            if(FriendDetailViewModel != null  && FriendDetailViewModel.HasChanges)
+            {              
+                var result = _messageDialogService.ShowOkCancleDialog("You made changes. Navigate away?","Question");
+                if(result == MessageDialogResult.Cancle)
+                {
+                    return;
+                }
+            }
             FriendDetailViewModel = _friendDetailViewModelCreator();
             await FriendDetailViewModel.LoadAsync(friendId);
         }

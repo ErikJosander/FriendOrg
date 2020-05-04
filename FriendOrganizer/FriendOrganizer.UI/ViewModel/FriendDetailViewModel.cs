@@ -13,13 +13,14 @@ namespace FriendOrganizer.UI.ViewModel
         private IFriendRepository _friendRepostory;
         private IEventAggregator _eventAggregator;
         private FriendWrapper _friend;
+        private bool _hasChanges;
         //Constructor
         public FriendDetailViewModel(IFriendRepository friendRepository,
             IEventAggregator eventAggregator)
         {
             _friendRepostory = friendRepository;
             _eventAggregator = eventAggregator;
-            
+
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
         public FriendWrapper Friend
@@ -31,10 +32,27 @@ namespace FriendOrganizer.UI.ViewModel
                 OnPropertyChanged();
             }
         }
-        public ICommand SaveCommand { get; }   
+        public ICommand SaveCommand { get; }
+       
+
+        public bool HasChanges
+        {
+            get { return _hasChanges; }
+            set
+            {
+                if(_hasChanges!= value)
+                {
+                    _hasChanges = value;
+                    OnPropertyChanged();
+                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                }
+            }
+        }
+
         private async void OnSaveExecute()
         {
             await _friendRepostory.SaveAsync();
+            HasChanges = _friendRepostory.HasChanges();
             _eventAggregator.GetEvent<AfterFriendSavedEvent>()
                 .Publish(new AfterFriendSavedEventArgs
                 {
@@ -43,22 +61,25 @@ namespace FriendOrganizer.UI.ViewModel
                 });
         }
         private bool OnSaveCanExecute()
-        {          
-            return Friend != null && !Friend.HasErrors;          
+        {
+            return Friend != null && !Friend.HasErrors && HasChanges;
         }
-       
         public async Task LoadAsync(int friendId)
         {
             var friend = await _friendRepostory.GetByIdAsync(friendId);
             Friend = new FriendWrapper(friend);
             Friend.PropertyChanged += (s, e) =>
             {
+                if(!HasChanges)
+                {
+                    HasChanges = _friendRepostory.HasChanges();
+                }
                 if (e.PropertyName == nameof(Friend.HasErrors))
                 {
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
             };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-        }        
+        }
     }
 }
