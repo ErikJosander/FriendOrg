@@ -1,12 +1,8 @@
-﻿using FriendOrganizer.Models;
-using FriendOrganizer.UI.Data;
+﻿using FriendOrganizer.UI.Data.Lookups;
 using FriendOrganizer.UI.Event;
 using Prism.Events;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.ViewModel
@@ -27,7 +23,7 @@ namespace FriendOrganizer.UI.ViewModel
                 .Subscribe(AfterFriendSaved);
         }
 
-        private async void AfterFriendSaved(AfterFriendSavedEventArgs obj)
+        private void AfterFriendSaved(AfterFriendSavedEventArgs obj)
         {
             var lookupItem = Friends.Single(l => l.Id == obj.Id);
             lookupItem.DisplayMember = obj.DisplayMember;

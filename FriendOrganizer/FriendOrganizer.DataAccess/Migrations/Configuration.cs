@@ -14,10 +14,12 @@
 
         protected override void Seed(FriendOrganizer.DataAccess.FriendOrganizerDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method
-            //  to avoid creating duplicate seed data.
+            context.Friends.AddOrUpdate(f => f.FirstName,
+            new Models.Friend { FirstName = "Erik", LastName = "Josander" },
+            new Models.Friend { FirstName = "Jamie", LastName = "Wilton" },
+            new Models.Friend { FirstName = "Malena", LastName = "Persson" },
+            new Models.Friend { FirstName = "Johan", LastName = "Karlsson" }
+            );
         }
     }
 }

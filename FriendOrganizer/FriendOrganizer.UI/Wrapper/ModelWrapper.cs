@@ -38,7 +38,7 @@ namespace FriendOrganizer.UI.Wrapper
         {
             var results = new List<ValidationResult>();
             var context = new ValidationContext(Model) { MemberName = propertyName };
-            Validator.TryValidateObject(currentValue, context, results);
+            Validator.TryValidateProperty(currentValue, context, results);
 
             foreach (var result in results)
             {

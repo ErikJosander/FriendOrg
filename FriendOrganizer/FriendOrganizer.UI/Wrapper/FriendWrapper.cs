@@ -39,19 +39,7 @@ namespace FriendOrganizer.UI.Wrapper
                     {
                         yield return "Robots are not valid friends";
                     }
-                    break;
-                case nameof(LastName):
-                    if (string.Equals(LastName, "Hitler", StringComparison.OrdinalIgnoreCase))
-                    {
-                        yield return "Nazis are not valid friends";
-                    }
-                    break;
-                case nameof(Email):
-                    if (IsValidEmail(Email))
-                    {
-                        yield return "Email is not valid";
-                    }
-                    break;
+                    break;                
             }
         }
     }
