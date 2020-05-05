@@ -56,6 +56,10 @@
     <Compile Include="Migrations\202005041109550_initaildatabase.designer.cs">
       <DependentUpon>202005041109550_initaildatabase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005050749327_addedEntity.cs" />
+    <Compile Include="Migrations\202005050749327_addedEntity.designer.cs">
+      <DependentUpon>202005050749327_addedEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -72,6 +76,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202005041109550_initaildatabase.resx">
       <DependentUpon>202005041109550_initaildatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005050749327_addedEntity.resx">
+      <DependentUpon>202005050749327_addedEntity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

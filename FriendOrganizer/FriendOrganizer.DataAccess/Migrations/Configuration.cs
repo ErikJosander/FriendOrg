@@ -20,6 +20,14 @@
             new Models.Friend { FirstName = "Malena", LastName = "Persson" },
             new Models.Friend { FirstName = "Johan", LastName = "Karlsson" }
             );
+
+            context.ProgrammingLanguages.AddOrUpdate(p => p.Name,
+                new Models.ProgrammingLanguage { Name = "C#" },
+                new Models.ProgrammingLanguage { Name = "TypeScript" },
+                new Models.ProgrammingLanguage { Name = "F#" },
+                new Models.ProgrammingLanguage { Name = "Swift" },
+                new Models.ProgrammingLanguage { Name = "Java" }
+                );
         }
     }
 }
