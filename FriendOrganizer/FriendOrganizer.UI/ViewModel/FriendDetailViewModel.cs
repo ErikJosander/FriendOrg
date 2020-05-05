@@ -22,7 +22,6 @@ namespace FriendOrganizer.UI.ViewModel
         private IMessageDialogService _messageDialogService;
         private IProgrammingLanguageLookupDataService _programmingLanguageLookupDataService;
         private FriendWrapper _friend;
-        private bool _hasChanges;
         private FriendPhoneNumberWrapper _selectedPhoneNumber;
 
         //Constructor
@@ -154,8 +153,7 @@ namespace FriendOrganizer.UI.ViewModel
             PhoneNumbers.Add(newNumber);
             Friend.Model.PhoneNumbers.Add(newNumber.Model);
             newNumber.Number = ""; // trigger validation Changes
-        }
-     
+        }   
         protected override async void OnSaveExecute()
         {
             await _friendRepostory.SaveAsync();
