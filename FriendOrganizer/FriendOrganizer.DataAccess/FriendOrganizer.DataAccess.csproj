@@ -60,6 +60,10 @@
     <Compile Include="Migrations\202005050749327_addedEntity.designer.cs">
       <DependentUpon>202005050749327_addedEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005050853041_addedPhonNumbers.cs" />
+    <Compile Include="Migrations\202005050853041_addedPhonNumbers.designer.cs">
+      <DependentUpon>202005050853041_addedPhonNumbers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -79,6 +83,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005050749327_addedEntity.resx">
       <DependentUpon>202005050749327_addedEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005050853041_addedPhonNumbers.resx">
+      <DependentUpon>202005050853041_addedPhonNumbers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

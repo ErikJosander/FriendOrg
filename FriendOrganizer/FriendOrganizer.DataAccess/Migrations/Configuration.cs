@@ -28,6 +28,11 @@
                 new Models.ProgrammingLanguage { Name = "Swift" },
                 new Models.ProgrammingLanguage { Name = "Java" }
                 );
+            
+            context.SaveChanges();
+
+            context.FriendPhoneNumbers.AddOrUpdate(ph => ph.Number,
+                new Models.FriendPhoneNumber { Number = "+46 12345678", FriendId = context.Friends.First().Id });
         }
     }
 }
