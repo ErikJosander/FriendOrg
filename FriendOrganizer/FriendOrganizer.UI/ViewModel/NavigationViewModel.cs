@@ -9,15 +9,15 @@ namespace FriendOrganizer.UI.ViewModel
 {
     public class NavigationViewModel : ViewModelBase, INavigationViewModel
     {
-        private IMeetingLookupDataService _meetingLookupDataService;
+        private IMeetingLookupDataService _meetingLookupService;
         private IFriendLookupDataService _friendLookupDataService;
         private IEventAggregator _eventAggregator;
 
         public NavigationViewModel(IFriendLookupDataService friendLookupDataService,
             IEventAggregator eventAggregator,
-            IMeetingLookupDataService meetingLookupDataService)
+            IMeetingLookupDataService meetingLookupService)
         {
-            _meetingLookupDataService = meetingLookupDataService;
+            _meetingLookupService = meetingLookupService;
             _friendLookupDataService = friendLookupDataService;
             _eventAggregator = eventAggregator;
 
@@ -36,7 +36,7 @@ namespace FriendOrganizer.UI.ViewModel
                 Friends.Add(new NavigationItemViewModel(item.Id, item.DisplayMember, _eventAggregator, nameof(FriendDetailViewModel)));
             }
 
-            lookup = await _meetingLookupDataService.GetMeetingLookupAsync();
+            lookup = await _meetingLookupService.GetMeetingLookupAsync();
             Meetings.Clear();
             foreach (var item in lookup)
             {

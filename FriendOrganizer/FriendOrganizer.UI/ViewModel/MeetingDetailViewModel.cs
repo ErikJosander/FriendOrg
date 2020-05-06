@@ -5,7 +5,6 @@ using FriendOrganizer.UI.Wrapper;
 using Prism.Commands;
 using Prism.Events;
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.ViewModel
@@ -17,8 +16,8 @@ namespace FriendOrganizer.UI.ViewModel
         private IMessageDialogService _messageDialogService;
 
         public MeetingDetailViewModel(IEventAggregator eventAggregator,
-            IMessageDialogService messageDialogService,
-            IMeetingRepository meetingRepository) : base(eventAggregator)
+          IMessageDialogService messageDialogService,
+          IMeetingRepository meetingRepository) : base(eventAggregator)
         {
             _meetingRepository = meetingRepository;
             _messageDialogService = messageDialogService;
@@ -27,7 +26,7 @@ namespace FriendOrganizer.UI.ViewModel
         public MeetingWrapper Meeting
         {
             get { return _meeting; }
-            set
+            private set
             {
                 _meeting = value;
                 OnPropertyChanged();
@@ -37,14 +36,15 @@ namespace FriendOrganizer.UI.ViewModel
         public override async Task LoadAsync(int? meetingId)
         {
             var meeting = meetingId.HasValue
-                ? await _meetingRepository.GetByIdAsync(meetingId.Value)
-                : CreateNewMeeting();
+              ? await _meetingRepository.GetByIdAsync(meetingId.Value)
+              : CreateNewMeeting();
 
             InitializeMeeting(meeting);
         }
+
         protected override void OnDeleteExecute()
         {
-            var result = _messageDialogService.ShowOkCancleDialog("Do you really want to delete this meeting?", "Question");
+            var result = _messageDialogService.ShowOkCancleDialog($"Do you really want to delete the meeting {Meeting.Title}?", "Question");
             if (result == MessageDialogResult.OK)
             {
                 _meetingRepository.Remove(Meeting.Model);
@@ -52,41 +52,52 @@ namespace FriendOrganizer.UI.ViewModel
                 RaiseDetailDeletedEvent(Meeting.Id);
             }
         }
-        private void InitializeMeeting(Meeting meeting)
-        {
-            Meeting = new MeetingWrapper(meeting);
-            Meeting.PropertyChanged += (s, e) =>
-                {
-                    if (!HasChanges)
-                    {
-                        HasChanges = _meetingRepository.HasChanges();
-                    }
-                    if (e.PropertyName == nameof(Meeting.HasErrors))
-                    {
-                        ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-                    }
-                };
-            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-        }
-        private Meeting CreateNewMeeting()
-        {
-            var meeting = new Meeting
-            {
-                DateFrom = DateTime.Now,
-                DateTo = DateTime.Now
-            };
-            _meetingRepository.Add(meeting);
-            return meeting;
-        }
+
         protected override bool OnSaveCanExecute()
         {
             return Meeting != null && !Meeting.HasErrors && HasChanges;
         }
+
         protected override async void OnSaveExecute()
         {
             await _meetingRepository.SaveAsync();
             HasChanges = _meetingRepository.HasChanges();
             RaiseDetailSavedEvent(Meeting.Id, Meeting.Title);
+        }
+
+        private Meeting CreateNewMeeting()
+        {
+            var meeting = new Meeting
+            {
+                DateFrom = DateTime.Now.Date,
+                DateTo = DateTime.Now.Date
+            };
+            _meetingRepository.Add(meeting);
+            return meeting;
+        }
+
+        private void InitializeMeeting(Meeting meeting)
+        {
+            Meeting = new MeetingWrapper(meeting);
+            Meeting.PropertyChanged += (s, e) =>
+            {
+                if (!HasChanges)
+                {
+                    HasChanges = _meetingRepository.HasChanges();
+                }
+
+                if (e.PropertyName == nameof(Meeting.HasErrors))
+                {
+                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                }
+            };
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+
+            if (Meeting.Id == 0)
+            {
+                // Little trick to trigger the validation
+                Meeting.Title = "";
+            }
         }
     }
 }
