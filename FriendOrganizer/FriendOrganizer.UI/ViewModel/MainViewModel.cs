@@ -1,4 +1,5 @@
-﻿using FriendOrganizer.UI.Event;
+﻿using Autofac.Features.Indexed;
+using FriendOrganizer.UI.Event;
 using FriendOrganizer.UI.View.Services;
 using Prism.Commands;
 using Prism.Events;
@@ -11,20 +12,17 @@ namespace FriendOrganizer.UI.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private IEventAggregator _eventAggregator;
-        private Func<IFriendDetailViewModel> _friendDetailViewModelCreator;
-        private Func<IMeetingDetailViewModel> _meetingDetailViewModelCreator;
+        private IIndex<string, IDetailViewModel> _detailViewModelCreator;
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _detailViewModel;
 
         public MainViewModel(INavigationViewModel navigationViewModel,
-            Func<IFriendDetailViewModel> friendDetailViewModelCreator,
-            Func<IMeetingDetailViewModel> meetingDetailViewModelCreator,
+            IIndex<string, IDetailViewModel> detailViewModelCreator, 
             IEventAggregator eventAggregator,
             IMessageDialogService messageDialogService)
         {
             _eventAggregator = eventAggregator;
-            _friendDetailViewModelCreator = friendDetailViewModelCreator;
-            _meetingDetailViewModelCreator = meetingDetailViewModelCreator;
+            _detailViewModelCreator = detailViewModelCreator;
             _messageDialogService = messageDialogService;
             _eventAggregator.GetEvent<AfterDetailDeletedEvent>()
                 .Subscribe(AfterDetailDeleted);
@@ -50,19 +48,8 @@ namespace FriendOrganizer.UI.ViewModel
                 {
                     return;
                 }
-            }
-            switch (args.ViewModelName)
-            {
-                case (nameof(FriendDetailViewModel)):
-                    DetailViewModel = _friendDetailViewModelCreator();
-                    break;
-                case (nameof(MeetingDetailViewModel)):
-                    DetailViewModel = _meetingDetailViewModelCreator();
-                    break;
-                default:
-                    throw new Exception($"Viewmodel {args.ViewModelName} could not load");
-            }
-
+            }         
+            DetailViewModel = _detailViewModelCreator[args.ViewModelName];
             await DetailViewModel.LoadAsync(args.Id);
         }
         public INavigationViewModel NavigationViewModel { get; }

@@ -14,20 +14,34 @@ namespace FriendOrganizer.UI.Wrapper
 
         }
         public int Id { get { return Model.Id; } }
-        public string Title 
+        public string Title
         {
             get { return GetValue<string>(); }
-            set { SetValue(value); } 
+            set { SetValue(value); }
         }
         public DateTime DateFrom
         {
             get { return GetValue<DateTime>(); }
-            set { SetValue(value); }
+            set
+            {
+                SetValue(value);
+                if (DateTo < DateFrom)
+                {
+                    DateTo = DateFrom;
+                }
+            }
         }
         public DateTime DateTo
         {
             get { return GetValue<DateTime>(); }
-            set { SetValue(value); }
+            set
+            {
+                SetValue(value);
+                if (DateTo < DateFrom)
+                {
+                    DateFrom = DateTo;
+                }
+            }
         }
 
     }

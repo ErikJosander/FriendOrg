@@ -21,9 +21,7 @@ namespace FriendOrganizer.UI.ViewModel
             _detailViewModelName = detailViewModelName;
             OpenDetailViewCommand = new DelegateCommand(OnOpenDetailViewExecute);       
         }   
-
         public int Id { get; }
-
         public string DisplayMember
         {
             get { return _displayMember; }
@@ -34,7 +32,6 @@ namespace FriendOrganizer.UI.ViewModel
             }
         }
         public ICommand OpenDetailViewCommand { get; }
-
         private void OnOpenDetailViewExecute()
         {
             _eventAggregator.GetEvent<OpenDetailViewEvent>()

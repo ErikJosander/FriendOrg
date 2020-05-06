@@ -64,7 +64,7 @@ namespace FriendOrganizer.UI.ViewModel
             var item = items.SingleOrDefault(f => f.Id == args.Id);
             if (item != null)
             {
-                Friends.Remove(item);
+                items.Remove(item);
             }
         }
         private void AfterDetailSaved(AfterDetailSavedEventArgs args)
