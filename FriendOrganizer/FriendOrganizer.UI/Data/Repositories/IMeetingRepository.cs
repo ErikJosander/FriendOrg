@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.Data.Repositories
 {
-    public interface IMeetingRepository
+    public interface IMeetingRepository : IGenericRepository<Meeting>
     {
-        Task<Meeting> GetByIdAsync(int id);
     }
 }
