@@ -11,6 +11,17 @@ namespace FriendOrganizer.UI.Data.Repositories
     public class FriendRepository : GenericRepository<Friend, FriendOrganizerDbContext>,
         IFriendRepository
     {
+        /// <summary>
+        /// Checks if an Friend is part of a meeting async.
+        /// </summary>
+        /// <param name="friendId"></param>
+        /// <returns></returns>
+        public async Task<bool> HasMeetingAsync(int friendId)
+        {
+            return await Context.Meetings.AsNoTracking()
+                .Include(m => m.Friends)
+                .AnyAsync(m => m.Friends.Any(f => f.Id == friendId));
+        }
         public FriendRepository(FriendOrganizerDbContext context):base(context)
         {           
         }

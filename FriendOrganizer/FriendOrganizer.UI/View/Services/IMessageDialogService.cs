@@ -2,6 +2,7 @@
 {
     public interface IMessageDialogService
     {
+        void ShowInfoDialog(string text);
         MessageDialogResult ShowOkCancleDialog(string text, string title);
     }
 }
