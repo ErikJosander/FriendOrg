@@ -2,24 +2,21 @@
 using FriendOrganizer.UI.View.Services;
 using Prism.Commands;
 using Prism.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace FriendOrganizer.UI.ViewModel
 {
-    public abstract class DetailViewModelBase : ViewModelBase, IDetailViewModelBase
+    public abstract class DetailViewModelBase : ViewModelBase, IDetailViewModel
     {
-        private int _id;
         private bool _hasChanges;
         protected readonly IEventAggregator EventAggregator;
         protected readonly IMessageDialogService MessageDialogService;
+        private int _id;
         private string _title;
+
         public DetailViewModelBase(IEventAggregator eventAggregator,
-            IMessageDialogService messageDialogService)
+          IMessageDialogService messageDialogService)
         {
             EventAggregator = eventAggregator;
             MessageDialogService = messageDialogService;
@@ -28,13 +25,13 @@ namespace FriendOrganizer.UI.ViewModel
             CloseDetailViewCommand = new DelegateCommand(OnCloseDetailViewExecute);
         }
 
-        
+        public abstract Task LoadAsync(int id);
 
-        public abstract Task LoadAsync(int Id);
         public ICommand SaveCommand { get; private set; }
+
         public ICommand DeleteCommand { get; private set; }
 
-        public ICommand CloseDetailViewCommand {get; }
+        public ICommand CloseDetailViewCommand { get; }
 
         public int Id
         {
@@ -45,10 +42,24 @@ namespace FriendOrganizer.UI.ViewModel
         public string Title
         {
             get { return _title; }
-            set
+            protected set
             {
                 _title = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public bool HasChanges
+        {
+            get { return _hasChanges; }
+            set
+            {
+                if (_hasChanges != value)
+                {
+                    _hasChanges = value;
+                    OnPropertyChanged();
+                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                }
             }
         }
 
@@ -57,34 +68,17 @@ namespace FriendOrganizer.UI.ViewModel
         protected abstract bool OnSaveCanExecute();
 
         protected abstract void OnSaveExecute();
-        protected virtual void OnCloseDetailViewExecute()
-        {
-            if(HasChanges == true)
-            {
-                var result = MessageDialogService.ShowOkCancleDialog("You have made changes, close this tab unsaved?","Question");
-                if(result == MessageDialogResult.Cancle)
-                {
-                    return;
-                }
-            }
-            EventAggregator.GetEvent<AfterDetailClosedEvent>()
-                .Publish(new AfterDetailClosedEventArgs
-                {
-                    Id = this.Id,
-                    ViewModelName = this.GetType().Name
-                });
-
-        }
 
         protected virtual void RaiseDetailDeletedEvent(int modelId)
         {
-            EventAggregator.GetEvent<AfterDetailDeletedEvent>().Publish(
-                new AfterDetailDeletedEventArgs
-                {
-                    Id = modelId,
-                    ViewModelName = this.GetType().Name
-                });
+            EventAggregator.GetEvent<AfterDetailDeletedEvent>().Publish(new
+             AfterDetailDeletedEventArgs
+            {
+                Id = modelId,
+                ViewModelName = this.GetType().Name
+            });
         }
+
         protected virtual void RaiseDetailSavedEvent(int modelId, string displayMember)
         {
             EventAggregator.GetEvent<AfterDetailSavedEvent>().Publish(new AfterDetailSavedEventArgs
@@ -95,18 +89,33 @@ namespace FriendOrganizer.UI.ViewModel
             });
         }
 
-        public bool HasChanges
+        //protected virtual void RaiseCollectionSavedEvent()
+        //{
+        //    EventAggregator.GetEvent<AfterCollectionSavedEvent>()
+        //      .Publish(new AfterCollectionSavedEventArgs
+        //      {
+        //          ViewModelName = this.GetType().Name
+        //      });
+        //}
+
+        protected virtual void OnCloseDetailViewExecute()
         {
-            get { return _hasChanges; }
-            set
+            if (HasChanges)
             {
-                if(_hasChanges != value)
+                var result = MessageDialogService.ShowOkCancleDialog(
+                  "You've made changes. Close this item?", "Question");
+                if (result == MessageDialogResult.Cancle)
                 {
-                    _hasChanges = value;
-                    OnPropertyChanged();
-                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                    return;
                 }
             }
+
+            EventAggregator.GetEvent<AfterDetailClosedEvent>()
+              .Publish(new AfterDetailClosedEventArgs
+              {
+                  Id = this.Id,
+                  ViewModelName = this.GetType().Name
+              });
         }
     }
 }

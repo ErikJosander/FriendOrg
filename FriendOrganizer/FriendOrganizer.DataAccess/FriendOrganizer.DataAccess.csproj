@@ -68,6 +68,10 @@
     <Compile Include="Migrations\202005051405522_meetingsAdded.designer.cs">
       <DependentUpon>202005051405522_meetingsAdded.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005071244241_timestamp.cs" />
+    <Compile Include="Migrations\202005071244241_timestamp.designer.cs">
+      <DependentUpon>202005071244241_timestamp.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -93,6 +97,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005051405522_meetingsAdded.resx">
       <DependentUpon>202005051405522_meetingsAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005071244241_timestamp.resx">
+      <DependentUpon>202005071244241_timestamp.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

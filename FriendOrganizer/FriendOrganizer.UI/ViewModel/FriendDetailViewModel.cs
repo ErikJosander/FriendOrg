@@ -13,6 +13,8 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Linq;
+using System.Data;
+using System.Data.Entity.Infrastructure;
 
 namespace FriendOrganizer.UI.ViewModel
 {
@@ -105,12 +107,10 @@ namespace FriendOrganizer.UI.ViewModel
             }
             SetTitle();
         }
-
         private void SetTitle()
         {
             Title =$"{Friend.FirstName} {Friend.LastName}";
         }
-
         private async Task LoadProgrammingLanguagesLookupAsync()
         {
             ProgrammingLanguages.Clear();
@@ -167,7 +167,30 @@ namespace FriendOrganizer.UI.ViewModel
         }   
         protected override async void OnSaveExecute()
         {
-            await _friendRepostory.SaveAsync();
+            try
+            {
+                await _friendRepostory.SaveAsync();
+            }
+            catch(DbUpdateConcurrencyException ex)
+            {
+                var result = MessageDialogService.ShowOkCancleDialog("The Entity has been changed in the database by another user" +
+                    " click OK to save your changes anyway, els click Cancel" +
+                    " to reload the entity from the database", "Question");
+
+                if(result == MessageDialogResult.OK)
+                {
+                    // Update the entityt from the db
+                    var entry = ex.Entries.Single();
+                    entry.OriginalValues.SetValues(entry.GetDatabaseValues());
+                    await _friendRepostory.SaveAsync();
+                }
+                else
+                {
+                    // Reload entry from database
+                    await ex.Entries.Single().ReloadAsync();
+                    await LoadAsync(Friend.Id);
+                }                    
+            }
             HasChanges = _friendRepostory.HasChanges();
             Id = Friend.Id;
             RaiseDetailSavedEvent(Friend.Id, (Friend.FirstName + " " + Friend.LastName));
