@@ -45,7 +45,7 @@
                     SelectedItem="{Binding SelectedDetailViewModel,Mode=TwoWay}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Title}"/>
                         <TextBlock Text="*" Visibility="{Binding HasChanges,
                             Converter={StaticResource booleanToVisibilityConverter}}"/>

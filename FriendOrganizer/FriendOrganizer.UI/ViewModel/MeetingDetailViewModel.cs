@@ -23,7 +23,7 @@ namespace FriendOrganizer.UI.ViewModel
         private List<Friend> _allFriends;
         public MeetingDetailViewModel(IEventAggregator eventAggregator,
           IMessageDialogService messageDialogService,
-          IMeetingRepository meetingRepository) : base(eventAggregator)
+          IMeetingRepository meetingRepository) : base(eventAggregator, messageDialogService)
         {
             _meetingRepository = meetingRepository;
             _messageDialogService = messageDialogService;

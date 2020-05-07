@@ -19,7 +19,6 @@ namespace FriendOrganizer.UI.ViewModel
     public class FriendDetailViewModel : DetailViewModelBase, IFriendDetailViewModel
     {
         private IFriendRepository _friendRepostory;
-        private IMessageDialogService _messageDialogService;
         private IProgrammingLanguageLookupDataService _programmingLanguageLookupDataService;
         private FriendWrapper _friend;
         private FriendPhoneNumberWrapper _selectedPhoneNumber;
@@ -28,10 +27,9 @@ namespace FriendOrganizer.UI.ViewModel
         public FriendDetailViewModel(IFriendRepository friendRepository,
             IEventAggregator eventAggregator,
             IMessageDialogService messageDialogService,
-            IProgrammingLanguageLookupDataService programmingLanguageLookupDataService) : base(eventAggregator)
+            IProgrammingLanguageLookupDataService programmingLanguageLookupDataService) : base(eventAggregator, messageDialogService)
         {
-            _friendRepostory = friendRepository;
-            _messageDialogService = messageDialogService;
+            _friendRepostory = friendRepository;       
             _programmingLanguageLookupDataService = programmingLanguageLookupDataService;
 
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
@@ -178,10 +176,10 @@ namespace FriendOrganizer.UI.ViewModel
         {
             if(await _friendRepostory.HasMeetingAsync(Friend.Id))
             {
-                _messageDialogService.ShowInfoDialog($"Friend: {Friend.FirstName} can't be deleted, as this friend is part of at least one meeting.");
+                MessageDialogService.ShowInfoDialog($"Friend: {Friend.FirstName} can't be deleted, as this friend is part of at least one meeting.");
                 return;
             }
-            var result = _messageDialogService.ShowOkCancleDialog($"Delete Friend: {Friend.FirstName} {Friend.LastName}?", "Question");
+            var result = MessageDialogService.ShowOkCancleDialog($"Delete Friend: {Friend.FirstName} {Friend.LastName}?", "Question");
             if (result == MessageDialogResult.OK)
             {
                 _friendRepostory.Remove(Friend.Model);

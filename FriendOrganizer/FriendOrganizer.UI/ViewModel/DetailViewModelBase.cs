@@ -1,4 +1,5 @@
 ﻿using FriendOrganizer.UI.Event;
+using FriendOrganizer.UI.View.Services;
 using Prism.Commands;
 using Prism.Events;
 using System;
@@ -15,25 +16,19 @@ namespace FriendOrganizer.UI.ViewModel
         private int _id;
         private bool _hasChanges;
         protected readonly IEventAggregator EventAggregator;
+        protected readonly IMessageDialogService MessageDialogService;
         private string _title;
-        public DetailViewModelBase(IEventAggregator eventAggregator)
+        public DetailViewModelBase(IEventAggregator eventAggregator,
+            IMessageDialogService messageDialogService)
         {
             EventAggregator = eventAggregator;
+            MessageDialogService = messageDialogService;
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
             DeleteCommand = new DelegateCommand(OnDeleteExecute);
             CloseDetailViewCommand = new DelegateCommand(OnCloseDetailViewExecute);
         }
 
-        protected virtual void OnCloseDetailViewExecute()
-        {
-            EventAggregator.GetEvent<AfterDetailClosedEvent>()
-                .Publish(new AfterDetailClosedEventArgs
-                {
-                    Id = this.Id,
-                    ViewModelName = this.GetType().Name
-                });
-            
-        }
+        
 
         public abstract Task LoadAsync(int? Id);
         public ICommand SaveCommand { get; private set; }
@@ -62,6 +57,24 @@ namespace FriendOrganizer.UI.ViewModel
         protected abstract bool OnSaveCanExecute();
 
         protected abstract void OnSaveExecute();
+        protected virtual void OnCloseDetailViewExecute()
+        {
+            if(HasChanges == true)
+            {
+                var result = MessageDialogService.ShowOkCancleDialog("You have made changes, close this tab unsaved?","Question");
+                if(result == MessageDialogResult.Cancle)
+                {
+                    return;
+                }
+            }
+            EventAggregator.GetEvent<AfterDetailClosedEvent>()
+                .Publish(new AfterDetailClosedEventArgs
+                {
+                    Id = this.Id,
+                    ViewModelName = this.GetType().Name
+                });
+
+        }
 
         protected virtual void RaiseDetailDeletedEvent(int modelId)
         {
