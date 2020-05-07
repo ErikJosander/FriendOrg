@@ -8,7 +8,7 @@ namespace FriendOrganizer.UI.ViewModel
 {
     public interface IDetailViewModelBase
     {
-        Task LoadAsync(int? Id);
+        Task LoadAsync(int Id);
         bool HasChanges { get; }
     }
 }
