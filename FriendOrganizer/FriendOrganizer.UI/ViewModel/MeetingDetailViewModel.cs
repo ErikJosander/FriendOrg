@@ -21,7 +21,6 @@ namespace FriendOrganizer.UI.ViewModel
         private Friend _selectedAvailableFriend;
         private Friend _selectedAddedFriend;
         private List<Friend> _allFriends;
-
         public MeetingDetailViewModel(IEventAggregator eventAggregator,
           IMessageDialogService messageDialogService,
           IMeetingRepository meetingRepository) : base(eventAggregator)
@@ -43,7 +42,7 @@ namespace FriendOrganizer.UI.ViewModel
                 _meeting = value;
                 OnPropertyChanged();
             }
-        }
+        }  
         public ObservableCollection<Friend> AddedFriends { get; }
         public ObservableCollection<Friend> AvailableFriends { get; }
         public ICommand AddFriendCommand { get; }
@@ -174,6 +173,10 @@ namespace FriendOrganizer.UI.ViewModel
                 {
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
+                if(e.PropertyName == nameof(Meeting.Title))
+                {
+                    SetTitle();
+                }
             };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
 
@@ -182,6 +185,12 @@ namespace FriendOrganizer.UI.ViewModel
                 // Little trick to trigger the validation
                 Meeting.Title = "";
             }
+            SetTitle();
+        }
+
+        private void SetTitle()
+        {
+            Title = $"{Meeting.Title}";
         }
     }
 }

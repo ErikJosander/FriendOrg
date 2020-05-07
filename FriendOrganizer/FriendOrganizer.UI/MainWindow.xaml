@@ -45,10 +45,14 @@
                     SelectedItem="{Binding SelectedDetailViewModel,Mode=TwoWay}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Title"/>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding Title}"/>
                         <TextBlock Text="*" Visibility="{Binding HasChanges,
                             Converter={StaticResource booleanToVisibilityConverter}}"/>
+                        <Button Command="{Binding CloseDetailViewCommand}"
+                                VerticalContentAlignment="Top" 
+                                HorizontalContentAlignment="Center" Margin="2"
+                                Content="X" FontSize="20"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>

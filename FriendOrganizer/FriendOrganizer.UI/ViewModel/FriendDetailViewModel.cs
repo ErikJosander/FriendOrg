@@ -92,16 +92,27 @@ namespace FriendOrganizer.UI.ViewModel
                 {
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
+                if( e.PropertyName == nameof(Friend.FirstName)
+                || e.PropertyName == nameof(Friend.LastName))
+                {
+                    SetTitle();
+                }
             };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-
             // Little trick to trigger the validation
             if (Friend.Id == 0)
             {
                 Friend.FirstName = "";
                 Friend.LastName = "";
             }
+            SetTitle();
         }
+
+        private void SetTitle()
+        {
+            Title =$"{Friend.FirstName} {Friend.LastName}";
+        }
+
         private async Task LoadProgrammingLanguagesLookupAsync()
         {
             ProgrammingLanguages.Clear();
