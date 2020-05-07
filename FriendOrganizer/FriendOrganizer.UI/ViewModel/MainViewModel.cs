@@ -55,7 +55,8 @@ namespace FriendOrganizer.UI.ViewModel
         private async void OnOpenDetailView(OpenDetailViewEventArgs args)
         {
             var detailViewModel = DetailViewModels
-                .SingleOrDefault(vm => vm.Id == args.Id && vm.GetType().Name == args.ViewModelName);
+                .SingleOrDefault(vm => vm.Id == args.Id
+                && vm.GetType().Name == args.ViewModelName);
 
             if (detailViewModel == null)
             {
@@ -72,7 +73,13 @@ namespace FriendOrganizer.UI.ViewModel
         }
         private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {
-            SelectedDetailViewModel = null;
+            var detailViewModel = DetailViewModels
+               .SingleOrDefault(vm => vm.Id == args.Id
+               && vm.GetType().Name == args.ViewModelName);
+            if(detailViewModel!=null)
+            {
+                DetailViewModels.Remove(detailViewModel);
+            }
         }
     }
 }

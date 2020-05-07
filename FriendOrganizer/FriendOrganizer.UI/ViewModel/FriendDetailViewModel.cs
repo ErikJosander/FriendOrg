@@ -46,6 +46,8 @@ namespace FriendOrganizer.UI.ViewModel
                 ? await _friendRepostory.GetByIdAsync(friendId.Value)
                 : CreateNewFriend();
 
+            Id = friend.Id;
+
             InitializeFriend(friend);
 
             InitializeFriendPhoneNumber(friend.PhoneNumbers);
@@ -158,6 +160,7 @@ namespace FriendOrganizer.UI.ViewModel
         {
             await _friendRepostory.SaveAsync();
             HasChanges = _friendRepostory.HasChanges();
+            Id = Friend.Id;
             RaiseDetailSavedEvent(Friend.Id, (Friend.FirstName + " " + Friend.LastName));
         }
         protected override async void OnDeleteExecute()

@@ -74,6 +74,8 @@ namespace FriendOrganizer.UI.ViewModel
               ? await _meetingRepository.GetByIdAsync(meetingId.Value)
               : CreateNewMeeting();
 
+            Id = meeting.Id;
+
             InitializeMeeting(meeting);
 
             // TODO Load friend for picklist
@@ -117,6 +119,7 @@ namespace FriendOrganizer.UI.ViewModel
         {
             await _meetingRepository.SaveAsync();
             HasChanges = _meetingRepository.HasChanges();
+            Id = Meeting.Id;
             RaiseDetailSavedEvent(Meeting.Id, Meeting.Title);
         }
         private void OnRemoveFriendExecute()
