@@ -41,9 +41,11 @@
         <DockPanel Grid.Row="8" Margin="10">
             <StackPanel DockPanel.Dock="Right">
                 <Button Content="Add" Width="125" Margin="10"
-                        Command="{Binding AddPhoneNumberCommand}"/>
+                        Command="{Binding AddPhoneNumberCommand}"
+                        BorderThickness="2"/>
                 <Button Content="Remove" Width="125" Margin="10"
-                        Command="{Binding RemovePhoneNumberCommand}"/>
+                        Command="{Binding RemovePhoneNumberCommand}"
+                        BorderThickness="2"/>
             </StackPanel>
             <DataGrid ItemsSource="{Binding PhoneNumbers}"
                       SelectedItem="{Binding SelectedPhoneNumber,Mode=TwoWay}"

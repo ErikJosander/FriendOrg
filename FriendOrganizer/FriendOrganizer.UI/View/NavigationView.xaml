@@ -13,7 +13,8 @@
         </Style>
         <DataTemplate x:Key="NaviItemTemplate">
             <Button Content="{Binding DisplayMember}"
-                            Command="{Binding OpenDetailViewCommand}">
+                    Command="{Binding OpenDetailViewCommand}"
+                    FontSize="17">
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
                         <Grid x:Name="grid">
@@ -39,16 +40,26 @@
             <RowDefinition Height="300"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <GroupBox Header="Friends">
-        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+        <GroupBox Margin="4">
+            <GroupBox.Header>
+                <Label FontSize="25">
+                    Friends
+                </Label>
+            </GroupBox.Header>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Friends}"
+                <ItemsControl ItemsSource="{Binding Friends}"
                           ItemContainerStyle="{StaticResource NaviItemContainerStyle}"
                           ItemTemplate="{StaticResource NaviItemTemplate}"/>
 
-        </ScrollViewer>
+            </ScrollViewer>
         </GroupBox>
-        <GroupBox Header="Meetings" Grid.Row="1">
+        <GroupBox  Grid.Row="1" Margin="4">
+            <GroupBox.Header>
+                <Label FontSize="25">
+                    Meetings
+                </Label>
+            </GroupBox.Header>
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Meetings}"
